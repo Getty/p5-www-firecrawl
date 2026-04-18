@@ -6,7 +6,7 @@ use overload
   bool => sub { 1 },
   fallback => 1;
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 has type        => ( is => 'ro', required => 1 );
 has message     => ( is => 'ro', required => 1 );

@@ -8,7 +8,7 @@ use URI ();
 use Safe::Isa;
 use WWW::Firecrawl::Error ();
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 has base_url => (
   is => 'ro',
