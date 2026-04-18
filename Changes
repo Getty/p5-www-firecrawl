@@ -1,4 +1,4 @@
-{{$NEXT}}
+0.001     2026-04-18 03:34:49Z
 
  - Initial release
  - Full Firecrawl v2 API bindings: scrape, crawl, map, search, batch/scrape, extract, agent, browser, monitoring
