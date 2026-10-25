@@ -1,0 +1,34 @@
+---
+claimed_at: 2026-10-25T05:38:53Z
+claimed_by: offen-2610
+class: standard
+completed: 2026-10-25T05:38:53Z
+created: 2026-10-21T02:12:10Z
+id: 3
+priority: medium
+started: 2026-10-25T05:29:13Z
+status: done
+tags:
+- bug
+- api
+title: scrape_error und die Standard-Klassifikation beurteilen dieselbe Seite unterschiedlich
+updated: 2026-10-25T05:38:53Z
+---
+
+is_scrape_ok() wendet die Policy an: per Default ist eine Seite failed, wenn metadata.error gesetzt ist
+oder metadata.statusCode >= 500. scrape_error() meldet dagegen jeden Statuscode ausserhalb 200..299
+als Fehler (HTTP 404). Eine 404-Seite gilt damit je nach Weg als Erfolg (is_scrape_ok) oder als
+Fehler (scrape_error). Wer beide kombiniert, sieht sich selbst widersprechen — und strict benutzt
+die Policy, während die Fehlermeldung im Text die andere Sicht nennt.
+
+Erledigt, wenn:
+
+- die führende Sicht dokumentiert ist (POD und README), also welche Frage die Policy beantwortet und
+  welche die Meldung,
+- Default-Policy und scrape_error sich für den dokumentierten Fall nicht mehr widersprechen — oder
+  der Widerspruch ausdrücklich benannt und begründet ist,
+- ein Test die 404-Seite (metadata.statusCode => 404, kein metadata.error) enthält und das Ergebnis
+  festnagelt,
+- ein Changes-Eintrag unter {{$NEXT}} die geänderte Sichtbarkeit nennt.
+
+Commit 5fa9fcc. Decision: policy is the leading view; scrape_error returns undef when is_scrape_ok. t/40 asserted scrape_error(404)='HTTP 404' (the contradiction itself); now undef by default, 'HTTP 404' under failure_codes [404]. New t/45 red before.
