@@ -1,0 +1,30 @@
+---
+claimed_at: 2026-10-25T05:39:03Z
+claimed_by: offen-2610
+class: standard
+completed: 2026-10-25T05:39:03Z
+created: 2026-10-21T02:12:12Z
+id: 5
+priority: medium
+started: 2026-10-25T05:29:22Z
+status: done
+tags:
+- hygiene
+- deps
+title: use URI () wird geladen, aber nirgends benutzt — und URI fehlt im cpanfile
+updated: 2026-10-25T05:39:03Z
+---
+
+lib/WWW/Firecrawl.pm lädt in Zeile 7 use URI ();, verwendet URI aber nirgends: die URLs werden als
+Zeichenketten über endpoint_url() gebaut, nicht über URI-Objekte. URI steht zugleich nicht im
+cpanfile — ein ungenutztes use ist toter Ballast, ein erklaertes use ohne cpanfile-Eintrag wäre eine
+kaputte Installation.
+
+Erledigt, wenn:
+
+- das use entfernt ist — oder die Nutzung begründet dokumentiert und URI im cpanfile mit
+  Mindestversion deklariert ist,
+- die Tests weiterhin grün sind,
+- kein funktionaler Unterschied entsteht: die gebauten Requests müssen bytegleich bleiben.
+
+Commit d1cb50c. use URI () removed; no other URI reference; suite green.
