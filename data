@@ -1,0 +1,35 @@
+---
+claimed_at: 2026-10-25T05:39:08Z
+claimed_by: offen-2610
+class: standard
+completed: 2026-10-25T05:39:08Z
+created: 2026-10-21T02:12:13Z
+id: 6
+priority: low
+started: 2026-10-25T05:29:27Z
+status: done
+tags:
+- feature
+title: scrape_many arbeitet streng sequenziell — die parallele Variante des Async-Clients
+  fehlt
+updated: 2026-10-25T05:39:08Z
+---
+
+scrape_many() in lib/WWW/Firecrawl.pm läuft in einer for-Schleife: ein Request pro URL, sequenziell,
+mit Wartezeit zwischen den Retries. Bei 50 URLs ist der Laufzeitschaden der Dominanzfaktor.
+
+Net::Async::Firecrawl::scrape_many macht dasselbe nebenläufig (Future->wait_all) — die Fähigkeit
+existiert also, nur nicht in der synchronen Dist. Ob die sync-Dist überhaupt parallel werden soll,
+ist eine Design-Entscheidung: LWP::UserAgent bietet kein request_multiple, nötig wäre eigenes
+Session-Handling.
+
+Erledigt, wenn:
+
+- die Entscheidung dokumentiert ist — parallel mit begrenzter Verbindungszahl, oder bewusst
+  sequenziell mit begründeter Begründung im POD,
+- bei parallel: eine Implementierung mit Begrenzung der gleichzeitigen Verbindungen und ein Test,
+  der die Parallelität belegt,
+- bei sequenziell: ein POD-Hinweis mit der Begründung, und die Karte wird mit dieser Begründung
+  geschlossen.
+
+Commit 548e295. Decision: deliberately sequential; reason in scrape_many POD (LWP::UserAgent has no concurrency, parallel needs own pool/event loop plus a dependency; points to batch_scrape and Net::Async::Firecrawl::scrape_many).
