@@ -1175,6 +1175,15 @@ Sequential per-URL scrape with partial-success semantics. Returns a hashref:
 Transport/API errors and target-level failures (per L</is_failure>) all land
 in C<failed[]>. The outer call never throws for per-URL failures.
 
+The URLs are scraped strictly one after the other, and that is deliberate:
+L<LWP::UserAgent> has no way to run requests concurrently, so a bounded
+parallel variant would need a connection pool and event loop of its own inside
+a client that is synchronous by design, plus a dependency to carry it. Retry
+waits (see L</retry_backoff>) also block the whole run. For large URL lists
+either use L</batch_scrape> and poll the job, which makes Firecrawl do the
+fan-out, or use C<scrape_many> of L<Net::Async::Firecrawl>, which scrapes
+the URLs concurrently and returns the same C<< { ok, failed, stats } >> shape.
+
 =method retry_failed_pages(\%crawl_or_batch_result, %scrape_opts)
 
 Pulls URLs out of a crawl/batch result's C<failed[]> array and re-scrapes them
