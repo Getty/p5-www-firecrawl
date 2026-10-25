@@ -33,8 +33,10 @@ my $batch = $fc->scrape_many(
   formats => ['markdown'],
 );
 
-# Retry failed pages from a crawl
-my $retried = $fc->retry_failed_pages( $crawl_result );
+# Retry the pages that failed in a scrape_many run. It takes the scrape_many
+# result (with its failed[]), not a crawl() / batch_scrape() job payload —
+# those are refused with an error.
+my $retried = $fc->retry_failed_pages( $batch );
 ```
 
 ## Three-Flavour API

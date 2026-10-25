@@ -849,7 +849,15 @@ sub scrape_many {
 
 sub retry_failed_pages {
   my ( $self, $result, %scrape_opts ) = @_;
-  my @urls = map { $_->{url} } @{ $result->{failed} || [] };
+  croak "retry_failed_pages: expects a result with a failed[] arrayref, as"
+    . " returned by scrape_many; a crawl or batch_scrape job payload has no"
+    . " failed[] (collect its pages and failures first)"
+    unless ref $result eq 'HASH' && ref $result->{failed} eq 'ARRAY';
+  my @urls = map {
+    croak "retry_failed_pages: every failed[] entry needs a url"
+      unless ref $_ eq 'HASH' && defined $_->{url};
+    $_->{url};
+  } @{ $result->{failed} };
   return $self->scrape_many( \@urls, %scrape_opts );
 }
 
@@ -1196,11 +1204,17 @@ the URLs concurrently and returns the same C<< { ok, failed, stats } >> shape.
 
 =method retry_failed_pages(\%crawl_or_batch_result, %scrape_opts)
 
-Pulls URLs out of a crawl/batch result's C<failed[]> array and re-scrapes them
+Pulls the URLs out of the C<failed[]> array of a result and re-scrapes them
 via L</scrape_many>. Returns the standard
 C<< { ok, failed, stats } >> hashref. The scrape options you pass here are
 applied to the retry round — caller is responsible for matching them to the
-original crawl's scrape options if needed.
+original scrape options if needed.
+
+The input is the result of L</scrape_many> (or any hashref with a C<failed[]>
+arrayref whose entries carry a C<url>). The payload of L</crawl>,
+L</crawl_status>, L</batch_scrape> or L</batch_scrape_status> is a job
+payload, not such a result: it has no C<failed[]>. Handing one over croaks
+with a message saying so, instead of quietly retrying nothing.
 
 =seealso
 
