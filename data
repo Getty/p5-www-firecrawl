@@ -1,0 +1,34 @@
+---
+claimed_at: 2026-10-25T05:38:58Z
+claimed_by: offen-2610
+class: standard
+completed: 2026-10-25T05:38:58Z
+created: 2026-10-21T02:12:11Z
+id: 4
+priority: medium
+started: 2026-10-25T05:29:18Z
+status: done
+tags:
+- docs
+- pod
+title: 'POD: die Attribute json und user_agent_string sind nicht dokumentiert'
+updated: 2026-10-25T05:38:58Z
+---
+
+In lib/WWW/Firecrawl.pm sind die Attribute mit =attr dokumentiert: base_url, api_key, api_version, ua,
+strict, max_attempts, retry_backoff, retry_statuses, on_retry, sleep_sub, is_failure, failure_codes.
+Nicht dokumentiert sind json (der JSON::MaybeXS-Codec, in den Aufrufern austauschbar) und
+user_agent_string (der User-Agent-String des Clients).
+
+Beides sind öffentliche Attribute, die in der Fehlersuche auftauchen: ein eigener Codec verändert
+das Fehlerbild, ein eigener User-Agent-String erscheint in den Firecrawl-Logs und im
+Kontingent-Reporting.
+
+Erledigt, wenn:
+
+- beide Attribute mit =attr beschrieben sind, im Hausstil aus getty-perl-pod,
+- podchecker grün läuft und die POD-Abdeckung die neuen Attribute einschließt,
+- die Laufzeit unverändert bleibt — reine Dokumentation, daher ohne Changes-Eintrag, solange sich
+  nichts Laufzeitrelevantes ändert.
+
+Commit 649e128. Attributes json and user_agent_string documented in POD; built POD shows both; no runtime change, no Changes entry.
