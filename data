@@ -1,0 +1,38 @@
+---
+claimed_at: 2026-10-25T05:38:43Z
+claimed_by: offen-2610
+class: standard
+completed: 2026-10-25T05:38:43Z
+created: 2026-10-21T02:12:08Z
+id: 1
+priority: high
+started: 2026-10-25T05:29:03Z
+status: done
+tags:
+- bug
+- api
+title: retry_failed_pages bekommt bei einem Crawl-Job eine leere Fehlerliste
+updated: 2026-10-25T05:38:43Z
+---
+
+$fc->crawl(...) liefert den Job-Payload (id, status, ...) — nicht die Seiten des Laufs. Das README-Beispiel
+
+  my $retried = $fc->retry_failed_pages( $crawl_result );
+
+liest $crawl_result->{failed}; ein Job-Payload hat keinen failed-Schlüssel. Der Aufruf endet deshalb
+stillschweigend mit { ok => [], failed => [], stats => { ok => 0, failed => 0, total => 0 } } — kein
+Fehler, keine Warnung, kein Retry. Dasselbe gilt für batch_scrape-Ergebnisse.
+
+Der Async-Client hat die passende Aufteilung: Net::Async::Firecrawl zerlegt das Ergebnis in
+{ data, failed, raw_data, stats }. Die sync-Dist hat keine Entsprechung.
+
+Erledigt, wenn:
+
+- entweder ein sync-Gegenstück zur Aufteilung existiert und crawl/batch_scrape die Seiten
+  einschließlich der fehlgeschlagenen liefern, oder retry_failed_pages die Eingabeform prüft und
+  eine verständliche Meldung liefert statt eines leeren Ergebnisses,
+- ein Test ein echtes Job-Ergebnis übergibt und das Verhalten festnagelt,
+- das README-Beispiel entsprechend angepasst ist,
+- ein Changes-Eintrag unter {{$NEXT}} den sichtbaren Effekt nennt.
+
+Commit c6f6c72. Decision: retry_failed_pages croaks on input without failed[] (crawl/batch payloads) instead of adding a sync split; t/85 red before. Also found: README example 'use eval { ... }' is invalid Perl; POD has unresolved internal L</...> links (scrape_many, retry_failed_pages, parse_response, is_scrape_ok, scrape_error) since headings carry signatures; skill www-firecrawl-core (scrape_error, retry_failed_pages, Traps) and CLAUDE.md (no LICENSE, no CI) are stale now.
