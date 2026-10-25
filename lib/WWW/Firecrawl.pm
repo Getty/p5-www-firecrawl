@@ -964,6 +964,30 @@ Optional — self-hosted instances can run without auth.
 
 Defaults to C<v2>.
 
+=attr json
+
+Codec used to encode request bodies and decode responses. Lazily built; default
+is C<< JSON::MaybeXS->new( utf8 => 1, convert_blessed => 1 ) >>. Pass your own
+object with C<encode> and C<decode> methods to change how bodies are
+serialised:
+
+  json => JSON::MaybeXS->new( utf8 => 1, canonical => 1 )
+
+A codec that is not UTF-8 aware, or that decodes differently, changes what
+C<parse_response> sees — an invalid-JSON C<api> error can come from the codec
+rather than from Firecrawl.
+
+=attr user_agent_string
+
+Value of the C<User-Agent> header sent by the default L</ua>. Defaults to
+C<WWW-Firecrawl/$VERSION>. It shows up in the Firecrawl server logs and in
+usage reporting, so set it to identify your application:
+
+  user_agent_string => 'my-crawler/1.4'
+
+Only read when L</ua> is built; it has no effect on a C<ua> you pass in
+yourself, and the request builders do not set the header.
+
 =attr ua
 
 L<LWP::UserAgent> instance used by the synchronous convenience methods. Lazily
