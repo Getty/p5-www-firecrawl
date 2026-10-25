@@ -4,7 +4,6 @@ use Moo;
 use Carp qw( croak );
 use HTTP::Request ();
 use JSON::MaybeXS ();
-use URI ();
 use Safe::Isa;
 use WWW::Firecrawl::Error ();
 
