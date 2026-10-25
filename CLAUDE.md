@@ -16,7 +16,8 @@ live in skill `www-firecrawl-core` — they are not repeated here.
 ## Delegation
 
 Delegate behavior-relevant code to the right agent instead of touching it yourself —
-the principle and the lane boundaries are in `.claude/rules/www-firecrawl-rules.md`.
+the principle is a shared house rule (skilletor bundle `getty-cpan-dist@getty`); the lane
+boundaries and hazards are in `.claude/rules/www-firecrawl-rules.md`.
 
 | Task | Agent |
 |---|---|
