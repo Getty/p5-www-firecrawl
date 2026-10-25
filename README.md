@@ -88,6 +88,12 @@ my $fc = WWW::Firecrawl->new( failure_codes => 'any-non-2xx' );
 my $fc = WWW::Firecrawl->new( is_failure => sub { my ($page) = @_; ... } );
 ```
 
+The policy is the leading view on a page: `is_scrape_ok`, `strict` and
+`scrape_many` follow it, and `scrape_error` only words its verdict — it returns
+`undef` for a page the policy accepts. A page that scraped a 404 without
+`metadata.error` is therefore a success by default; use `failure_codes => [404]`
+to treat it as failed (`scrape_error` then says `HTTP 404`).
+
 **Retry** — automatic on transport failures and 429/502/503/504:
 
 ```perl

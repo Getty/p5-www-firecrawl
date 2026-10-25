@@ -82,7 +82,12 @@ subtest 'scrape_error 4 branches' => sub {
   is $fc->scrape_error( page( statusCode => 200, error => 'boom' ) ),
      'boom', 'only metadata.error';
   is $fc->scrape_error( page( statusCode => 404 ) ),
-     'HTTP 404', 'only non-2xx status';
+     undef, 'a 404 the default policy accepts has no error message';
+  is $fc->scrape_error( page( statusCode => 502 ) ),
+     'HTTP 502', 'only non-2xx status, rejected by the policy';
+  my $codes = WWW::Firecrawl->new( base_url => 'http://x', failure_codes => [404] );
+  is $codes->scrape_error( page( statusCode => 404 ) ),
+     'HTTP 404', 'a 404 the policy rejects is worded';
   is $fc->scrape_error( page( statusCode => 200 ) ),
      undef, 'nothing wrong';
 };

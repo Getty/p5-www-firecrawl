@@ -1,5 +1,10 @@
 {{$NEXT}}
 
+ - scrape_error() now follows the classification policy: it returns undef for
+   a page the policy accepts, so a 404 page without metadata.error no longer
+   reads "HTTP 404" while is_scrape_ok() calls it a success. Pages rejected
+   via failure_codes or is_failure still get their message.
+
 0.001     2026-04-18 03:34:49Z
 
  - Initial release

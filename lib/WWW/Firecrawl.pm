@@ -294,6 +294,7 @@ sub scrape_status {
 sub scrape_error {
   my ( $self, $page ) = @_;
   return undef unless ref $page eq 'HASH';
+  return undef if $self->is_scrape_ok($page);
   my $err = $page->{metadata}{error};
   my $sc  = $page->{metadata}{statusCode};
   my $bad_sc = defined $sc && ( $sc < 200 || $sc >= 300 );
@@ -1040,6 +1041,10 @@ Code reference that classifies a scrape result hash as a failure. Defaults to:
 C<metadata.error> non-empty OR C<metadata.statusCode> >= 500. Mutually
 exclusive with L</failure_codes>.
 
+This policy is the leading view on a page: L</strict>, L</scrape_many> and
+L</is_scrape_ok> all follow it, and L</scrape_error> only words its verdict.
+A page that scraped a C<404> is therefore a success by default.
+
 =attr failure_codes
 
 Constructor sugar for common L</is_failure> variants. Pass an arrayref of HTTP
@@ -1074,8 +1079,13 @@ if absent.
 
 =method scrape_error($page)
 
-Returns a combined error string for a failed scrape (C<metadata.error>
-and/or non-2xx C<statusCode>), or C<undef> if nothing looks wrong.
+Returns a message for a page the policy classified as failed
+(C<metadata.error> and/or the non-2xx C<statusCode>), or C<undef> when the
+policy accepts the page. The policy (L</is_failure>) decides I<whether> a page
+failed, this method only words I<why>; the two never disagree. With the default
+policy a C<404> page without C<metadata.error> is accepted, so it has no
+message; use C<< failure_codes => [404] >> to treat it as failed, and it then
+reads C<HTTP 404>. Read the status itself with L</scrape_status>.
 
 =method scrape / scrape_request / parse_scrape_response
 
