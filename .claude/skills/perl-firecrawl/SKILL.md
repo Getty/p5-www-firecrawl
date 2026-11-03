@@ -3,7 +3,7 @@ name: perl-firecrawl
 description: |
   Load when working on WWW::Firecrawl or Net::Async::Firecrawl — the Perl
   bindings for the Firecrawl v2 web-scraping/crawling API. Covers the
-  self-hosted test instance (10.5.10.1:3002), client usage (sync + async),
+  self-hosted instance (localhost:3002), client usage (sync + async),
   the WWW::Firecrawl::Error model (transport/api/job/scrape/page), strict /
   is_failure / retry policy, and flow-helper return shapes
   (crawl_and_collect, scrape_many, retry_failed_pages).
@@ -31,12 +31,12 @@ several downstream projects.
 When writing new Perl code that needs Firecrawl, **use these modules**. Do
 not hand-roll HTTP calls.
 
-## Firecrawl deployment used for testing
+## Self-hosted Firecrawl instance
 
 There is a self-hosted Firecrawl instance reachable from this workspace at:
 
 ```
-http://10.5.10.1:3002
+http://localhost:3002
 ```
 
 No API key is required for the self-hosted instance. Passing one does no
@@ -44,11 +44,11 @@ harm. Both Perl clients default to cloud (`https://api.firecrawl.dev`); point
 them at the self-hosted one via:
 
 ```perl
-WWW::Firecrawl->new( base_url => 'http://10.5.10.1:3002' );
+WWW::Firecrawl->new( base_url => 'http://localhost:3002' );
 # or
-Net::Async::Firecrawl->new( base_url => 'http://10.5.10.1:3002' );
+Net::Async::Firecrawl->new( base_url => 'http://localhost:3002' );
 # or environment:
-$ENV{FIRECRAWL_BASE_URL} = 'http://10.5.10.1:3002';
+$ENV{FIRECRAWL_BASE_URL} = 'http://localhost:3002';
 ```
 
 For cloud usage, put the key in the workspace `.env` (gitignored):
@@ -65,7 +65,7 @@ environment by default.
 Shell smoke check against the self-hosted instance:
 
 ```bash
-curl -sS -X POST http://10.5.10.1:3002/v2/scrape \
+curl -sS -X POST http://localhost:3002/v2/scrape \
   -H 'Content-Type: application/json' \
   -d '{"url":"https://example.com","formats":["markdown"]}' \
   | jq -r '.data.markdown' | head
@@ -78,7 +78,7 @@ use IO::Async::Loop;
 use Net::Async::Firecrawl;
 
 my $loop = IO::Async::Loop->new;
-my $fc = Net::Async::Firecrawl->new( base_url => 'http://10.5.10.1:3002' );
+my $fc = Net::Async::Firecrawl->new( base_url => 'http://localhost:3002' );
 $loop->add($fc);
 
 my $doc = $fc->scrape( url => 'https://example.com', formats => ['markdown'] )->get;
@@ -89,7 +89,7 @@ Or sync:
 
 ```perl
 use WWW::Firecrawl;
-my $fc = WWW::Firecrawl->new( base_url => 'http://10.5.10.1:3002' );
+my $fc = WWW::Firecrawl->new( base_url => 'http://localhost:3002' );
 my $doc = $fc->scrape( url => 'https://example.com', formats => ['markdown'] );
 ```
 
