@@ -7,8 +7,10 @@ until they load. This file adds what is true only here, and wins where it differ
 
 ## What this repo is
 
-Firecrawl v2 API bindings (self-host first, cloud compatible). The module stands at 0.002, the
-next unreleased number after the last release 0.001.
+Firecrawl v2 API bindings (self-host first, cloud compatible). Both modules carry `our $VERSION`;
+the bundle writes it at release through `[RewriteVersion::Transitional]` and
+`[BumpVersionAfterRelease]`. Prerequisites live in `cpanfile`, `dist.ini` holds the header
+and the bundle.
 
 ## Agent team
 

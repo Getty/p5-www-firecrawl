@@ -123,8 +123,8 @@ payload verbatim, including its query string.
 
 ## Traps
 
-- `use URI ()` is loaded and never used, and `URI` is not in the `cpanfile` — a
-  `use`d-but-undeclared module is a broken build for everyone without it locally.
+- Every module the code `use`s is declared in the `cpanfile`; a `use`d-but-undeclared
+  module is a broken build for everyone without it locally.
 - `scrape_status` and `scrape_error` read `$page->{metadata}{…}` and therefore
   autovivify `metadata` in a hash the caller passed in.
 - `parse_response` returns the payload as-is — it does not check whether a scrape
@@ -132,12 +132,12 @@ payload verbatim, including its query string.
 - The convenience methods swallow nothing: a failing endpoint dies, it does not
   return an error value.
 - `failure_codes` and `is_failure` cannot be combined.
-- `dist.ini` uses `[@Author::GETTY]`, and that bundle aborts the build when no
-  `LICENSE` file is committed.
+- `dist.ini` uses `[@Author::GETTY]`, and that bundle checks the committed `LICENSE`
+  against `license`, `copyright_holder` and `copyright_year`.
 
 ## Tests
 
-`prove -lr t/` — nine files, 66 tests, no network and no live instance: the tests
+`prove -lr t/` — no network and no live instance: the tests
 build requests and feed crafted `HTTP::Response` objects into the parsers. Keep it
 that way; a test that needs Firecrawl running is a test nobody runs.
 

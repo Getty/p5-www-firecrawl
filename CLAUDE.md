@@ -33,6 +33,7 @@ Work is coordinated on the repo's `karr` board (`karr board`).
 
 ## State of the code
 
-The distribution works and its tests are green (`prove -lr t/`), but it predates the
-current house structures: there is no `LICENSE` file, so `dzil build` aborts, and there
-is no CI. The known gaps are tracked on the internal board.
+The distribution's tests are green (`prove -lr t/`). It follows the house structure:
+`LICENSE`, `Changes`, `README.md`, `cpanfile` and a `.github/workflows/ci.yml` that runs
+the offline suite through the shared `dzil-test` action are committed; `dzil build` runs
+through.
