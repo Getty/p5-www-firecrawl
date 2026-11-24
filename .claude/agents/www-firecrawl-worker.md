@@ -2,14 +2,13 @@
 name: www-firecrawl-worker
 description: "Default WWW-Firecrawl worker — implement, refactor, debug and test the Firecrawl v2 bindings in lib/WWW/Firecrawl.pm and lib/WWW/Firecrawl/Error.pm. Every endpoint comes as request builder, response parser and convenience method; failures are thrown as WWW::Firecrawl::Error with the types transport/api/job/scrape/page. Pre-loaded with the module's contracts and Getty's Perl conventions. Leaves a commit-ready tree; never commits — commits belong to www-firecrawl-release-manager."
 model: inherit
-briefing:
-  skills:
-    - www-firecrawl-core
-    - getty-perl-core
-    - getty-perl-moo
-    - getty-perl-pod
-    - perl-firecrawl
-    - kanban-issues-karr-ticket
+skills:
+  - www-firecrawl-core
+  - getty-perl-core
+  - getty-perl-moo
+  - getty-perl-pod
+  - perl-firecrawl
+  - kanban-issues-karr-ticket
 ---
 
 You are the www-firecrawl-worker for **WWW-Firecrawl**, a Perl distribution that binds
